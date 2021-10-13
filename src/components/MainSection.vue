@@ -1,20 +1,35 @@
 <template>
-  <div class="main-section" v-if="status !== 'loading'">
+  <div class="main-section" v-if="status === 'before'">
+    <button @click="getArtist()">Get Artist</button>
+  </div>
+  <div class="main-section" v-if="status === 'loading'">
+    loading
+  </div>
+  <div class="main-section" v-if="status === 'ready'">
     <div class="artist-section">
-      <a class="artist-section__link" :href="artistData.info.uri" title="open artist page in spotify" aria-label="open artist page in spotify">
-        <h1>{{ artistData.info.name }}</h1>
-        <img :src="artistData.info.images[0].url"/>
-      </a>
+      <card
+        :item="artistData.info"
+        :revealTimeout="100"
+        title="open artist page in spotify">
+      </card>
     </div>
     
-    <h2>Releases</h2>
+    <h2
+      :class="{
+        'releases': true,
+        'releases--visible': releasesVisible
+      }">
+      Releases
+    </h2>
     <div class="albums-section">
-      <div class="albums-section__album" v-for="album in artistData.albums" :key="album.id">
-        <a class="albums-section__link" :href="album.uri" title="open album page in spotify" aria-label="open album page in spotify">
-          <h3>{{ album.name }}</h3>
-          <img :src="album.images[0].url"/>
-        </a>
-      </div>
+      <card
+        class="albums-section__album"
+        v-for="album, index in artistData.albums"
+        :key="album.id"
+        :item="album"
+        :revealTimeout="500 * (index + 1)"
+        title="open album page in spotify">
+      </card>
     </div>
   </div>
 </template>
@@ -27,16 +42,18 @@ import {
 } from '../utilities/fetchers';
 import { getRandomArtistFromArray, sortAndFilterArtistsByPopularity } from '../utilities/utils';
 import artistArray from '../assets/artists.json';
+import Card from './Card.vue';
 
 export default {
+  components: { Card },
   name: 'MainSection',
   data: () => ({
     artistData: null,
-    status: 'loading'
+    status: 'before',
+    releasesVisible: false,
   }),
   props: {},
   created: function () {
-    this.getData();
   },
   methods: {
     getData: async function () {
@@ -47,23 +64,22 @@ export default {
       const chosenArtistAlbums = await fetchAlbumsFromArtist(token, chosenArtist.id);
 
       this.artistData = { info: chosenArtist, albums: chosenArtistAlbums };
-      console.log(this.artistData);
       this.status = 'ready';
+
+      setTimeout(() => {
+        this.releasesVisible = true;
+      }, 300);
+    },
+    getArtist: function () {
+      this.status = 'loading';
+      this.getData();
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 $breakpoint-tablet: 768px;
-
-h1,
-h2,
-h3 {
-  text-align: center;
-  color: rgba(201, 201, 201, 0.576);
-}
 
 .artist-section {
   padding: 0 40%;
@@ -73,17 +89,14 @@ h3 {
     padding: 0;
     margin: 1rem;
   }
-  
-  &__link {
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: opacity 500ms ease-in-out;
+}
 
-    &:hover {
-      opacity: 0.5;
-    }
+.releases {
+  opacity: 0;
+  transition: opacity 1000ms ease-in-out;
+
+  &--visible {
+    opacity: 1;
   }
 }
 
@@ -111,21 +124,5 @@ h3 {
       max-width: 100%;
     }
   }
-
-  &__link {
-    height: 100%;
-    text-decoration: none; 
-    transition: opacity 500ms ease-in-out;
-
-    &:hover {
-      opacity: 0.5;
-    }
-  }
-}
-
-img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover;
 }
 </style>

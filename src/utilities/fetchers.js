@@ -15,7 +15,7 @@ export const getToken = async () => {
 }
 
 export const fetchArtistsData = async (token, artistArray) => {
-    const artistString = artistArray.map((artist) => artist.id).join(',');
+    const artistString = artistArray.join(',');
 
     const res = await fetch(`https://api.spotify.com/v1/artists?ids=${artistString}`, {
         headers: {

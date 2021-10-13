@@ -16,14 +16,21 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 body {
-  background-color: #151718;
+  background-color: #0e0f10;
 }
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  text-align: center;
+  color: rgba(201, 201, 201, 0.576);
 }
 </style>
