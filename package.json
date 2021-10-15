@@ -5,7 +5,7 @@
   "scripts": {
     "start": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "npm run build:server && vue-cli-service build",
     "lint": "vue-cli-service lint",
     "start:server": "netlify-lambda serve src/lambda -c webpack.server.js",
     "build:server": "netlify-lambda build src/lambda"
