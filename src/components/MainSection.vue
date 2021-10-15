@@ -58,17 +58,19 @@ export default {
   methods: {
     getData: async function () {
       const token = await getToken();
-      const artistDataArray = await fetchArtistsData(token, artistArray);
-      const sortedAndFilteredArtists = sortAndFilterArtistsByPopularity(artistDataArray);
-      const chosenArtist = getRandomArtistFromArray(sortedAndFilteredArtists);
-      const chosenArtistAlbums = await fetchAlbumsFromArtist(token, chosenArtist.id);
-
-      this.artistData = { info: chosenArtist, albums: chosenArtistAlbums };
-      this.status = 'ready';
-
-      setTimeout(() => {
-        this.releasesVisible = true;
-      }, 300);
+      if (token.split){
+        const artistDataArray = await fetchArtistsData(token, artistArray);
+        const sortedAndFilteredArtists = sortAndFilterArtistsByPopularity(artistDataArray);
+        const chosenArtist = getRandomArtistFromArray(sortedAndFilteredArtists);
+        const chosenArtistAlbums = await fetchAlbumsFromArtist(token, chosenArtist.id);
+  
+        this.artistData = { info: chosenArtist, albums: chosenArtistAlbums };
+        this.status = 'ready';
+  
+        setTimeout(() => {
+          this.releasesVisible = true;
+        }, 300);
+      }
     },
     getArtist: function () {
       this.status = 'loading';
