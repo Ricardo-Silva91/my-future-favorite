@@ -6,7 +6,9 @@
     "start": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start:server": "netlify-lambda serve src/lambda -c webpack.server.js",
+    "build:server": "netlify-lambda build src/lambda"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -22,7 +24,11 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
     "sass": "^1.42.1",
-    "sass-loader": "^10.1.1"
+    "sass-loader": "^10.1.1",
+    "dotenv": "^5.0.1",
+    "encoding": "^0.1.13",
+    "netlify-lambda": "^2.0.15",
+    "node-fetch": "^2.6.5"
   },
   "eslintConfig": {
     "root": true,

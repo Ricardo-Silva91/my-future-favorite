@@ -1,27 +1,16 @@
 export const getToken = async () => {
-  // const encodedKey = btoa(`${process.env.VUE_APP_SPOTIFY_CLIENT_ID}:${process.env.VUE_APP_SPOTIFY_SECRET_KEY}`);
-  // const res = await fetch("https://accounts.spotify.com/api/token", {
-  //     body: "grant_type=client_credentials",
-  //     headers: {
-  //       Authorization: `Basic ${encodedKey}`,
-  //       "Content-Type": "application/x-www-form-urlencoded"
-  //     },
-  //     method: "POST"
-  //   });
-
-  // const getTokenJson = await res.json();
-
-  // return getTokenJson.access_token;
-
-  const res = await fetch("https://jovial-johnson-f3855e.netlify.app/api/getToken", {
+  // const res = await fetch("https://jovial-johnson-f3855e.netlify.app/api/getToken", {
+  const res = await fetch("api/getToken", {
+      headers: {
+        
+      },
       method: "GET"
     });
-
-    console.log({ res });
-
+  
   const getTokenJson = await res.json();
+  console.log({ res, getTokenJson });
 
-  return getTokenJson.access_token;
+  return getTokenJson.token;
 }
 
 export const fetchArtistsData = async (token, artistArray) => {
