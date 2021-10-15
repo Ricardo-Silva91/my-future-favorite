@@ -3,6 +3,11 @@ export const sortAndFilterArtistsByPopularity = (artistDataArray) => {
     const filteredArray = sortedArray.filter((artist) => artist.popularity <= sortedArray[0].popularity);
 
     return filteredArray;
-}
+};
 
-export const getRandomArtistFromArray = (artistDataArray = []) =>  artistDataArray[Math.floor(Math.random() * artistDataArray.length)];
+export const getGenresFromArtistArray = (artistArray) => ['', ...artistArray.reduce((acc, artist) => [...acc, ...artist.genres.filter((genre) => !acc.includes(genre))], [])]; 
+
+export const getRandomArtistFromArray = (artistDataArray = [], genre = '') =>  {
+    const filteredArtistArray = genre === '' ? artistDataArray : artistDataArray.filter((artist) => artist.genres.includes(genre));
+    return filteredArtistArray[Math.floor(Math.random() * filteredArtistArray.length)];
+}

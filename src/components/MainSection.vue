@@ -1,6 +1,15 @@
 <template>
   <div class="main-section" v-if="status === 'before'">
-    <button @click="getArtist()">Get Artist</button>
+    <div class="landing-section">
+      <get-artist-button @click="chooseArtist()"></get-artist-button>
+      <!-- <button @click="chooseArtist()">Get Artist</button> -->
+      <label>Filter by genre</label>
+      <select @change="handleGenreChange($event)">
+        <option v-for="genre, index in genres" :key="genre" :value="index">
+          {{ genre === '' ? 'all' : genre }}
+        </option>
+      </select>
+    </div>
   </div>
   <div class="main-section" v-if="status === 'loading'">
     loading
@@ -40,41 +49,52 @@ import {
   fetchArtistsData,
   getToken,
 } from '../utilities/fetchers';
-import { getRandomArtistFromArray, sortAndFilterArtistsByPopularity } from '../utilities/utils';
+import { getGenresFromArtistArray, getRandomArtistFromArray, sortAndFilterArtistsByPopularity } from '../utilities/utils';
 import artistArray from '../assets/artists.json';
 import Card from './Card.vue';
+import GetArtistButton from './GetArtistButton.vue';
 
 export default {
-  components: { Card },
+  components: { Card, GetArtistButton },
   name: 'MainSection',
   data: () => ({
     artistData: null,
     status: 'before',
     releasesVisible: false,
+    token: null,
+    sortedAndFilteredArtists: [],
+    genres: [],
+    selectedGenre: 0,
   }),
   props: {},
   created: function () {
+    this.getArtists();
   },
   methods: {
-    getData: async function () {
-      const token = await getToken();
-      if (token.split){
-        const artistDataArray = await fetchArtistsData(token, artistArray);
-        const sortedAndFilteredArtists = sortAndFilterArtistsByPopularity(artistDataArray);
-        const chosenArtist = getRandomArtistFromArray(sortedAndFilteredArtists);
-        const chosenArtistAlbums = await fetchAlbumsFromArtist(token, chosenArtist.id);
-  
-        this.artistData = { info: chosenArtist, albums: chosenArtistAlbums };
-        this.status = 'ready';
-  
-        setTimeout(() => {
-          this.releasesVisible = true;
-        }, 300);
+    handleGenreChange: function(event) {
+      const newVal = event.target.value;
+      this.selectedGenre = newVal;
+    },
+    getArtists: async function () {
+      this.token = await getToken();
+      if (this.token.split){
+        const artistDataArray = await fetchArtistsData(this.token, artistArray);
+        this.sortedAndFilteredArtists = sortAndFilterArtistsByPopularity(artistDataArray);
+        this.genres = getGenresFromArtistArray(this.sortedAndFilteredArtists);
       }
     },
-    getArtist: function () {
+    chooseArtist: async function () {
       this.status = 'loading';
-      this.getData();
+
+      const chosenArtist = getRandomArtistFromArray(this.sortedAndFilteredArtists, this.genres[this.selectedGenre]);
+      const chosenArtistAlbums = await fetchAlbumsFromArtist(this.token, chosenArtist.id);
+
+      this.artistData = { info: chosenArtist, albums: chosenArtistAlbums };
+      this.status = 'ready';
+
+      setTimeout(() => {
+        this.releasesVisible = true;
+      }, 300);
     }
   }
 }
@@ -82,6 +102,24 @@ export default {
 
 <style scoped lang="scss">
 $breakpoint-tablet: 768px;
+
+.main-section {
+  height: 100%;
+}
+
+.landing-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10% 40%;
+  flex-wrap: wrap;
+
+  label {
+    color: rgba(201, 201, 201, 0.576);
+    margin-top: 2rem;
+  }
+}
 
 .artist-section {
   padding: 0 40%;

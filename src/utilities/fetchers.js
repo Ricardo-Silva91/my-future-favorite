@@ -1,14 +1,7 @@
 export const getToken = async () => {
-  // const res = await fetch("https://jovial-johnson-f3855e.netlify.app/api/getToken", {
-  const res = await fetch("api/getToken", {
-      headers: {
-        
-      },
-      method: "GET"
-    });
+  const res = await fetch("api/getToken");
   
   const getTokenJson = await res.json();
-  console.log({ res, getTokenJson });
 
   return getTokenJson.token;
 }

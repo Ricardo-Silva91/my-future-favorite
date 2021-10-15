@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve",
+    "start": "netlify dev",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && npm run build:server",
     "lint": "vue-cli-service lint",
@@ -13,7 +13,8 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "markdown-to-json": "^0.5.4",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue3-lazy": "^1.0.0-alpha.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
