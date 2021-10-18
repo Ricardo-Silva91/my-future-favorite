@@ -1,6 +1,6 @@
 <template>
-  <div class="wrapper">
-    <ButtonSvg class="frame"></ButtonSvg>
+  <div class="get-artist-button">
+    <ButtonSvg class="get-artist-button__button"></ButtonSvg>
   </div>
 </template>
 
@@ -15,9 +15,8 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.wrapper {
+.get-artist-button {
   position: relative;
   animation: glow 3s infinite;
   overflow: visible;
@@ -26,11 +25,11 @@ export default {
   transition: transform 500ms ease-in-out;
 }
 
-.wrapper:hover {
+.get-artist-button:hover {
   transform: scale(1.05);
 }
 
-.frame {
+.get-artist-button__button {
   display: block;
   width: 100%;
   height: 100%;
@@ -41,18 +40,8 @@ export default {
 }
 
 @keyframes glow{
-  0%{
-    /* box-shadow: 5px 5px 50px rgb(64, 20, 146),-5px -5px 50px rgb(64, 20, 146); */
-    filter: drop-shadow(5px 5px 50px rgb(64, 20, 146)) drop-shadow(-5px -5px 50px rgb(64, 20, 146));
-  }
-  
-  50%{
-    /* box-shadow: 5px 5px 50px rgb(140, 69, 182),-5px -5px 50px rgb(140, 69, 182); */
-    filter: drop-shadow(5px 5px 50px rgb(140, 69, 182)) drop-shadow(-5px -5px 50px rgb(140, 69, 182));
-  }
-  100%{
-    /* box-shadow: 5px 5px 50px rgb(64, 20, 146),-5px -5px 50px rgb(64, 20, 146); */
-    filter: drop-shadow(5px 5px 50px rgb(64, 20, 146)) drop-shadow(-5px -5px 50px rgb(64, 20, 146));
-  }
+  0% { filter: drop-shadow(5px 5px 50px rgb(64, 20, 146)) drop-shadow(-5px -5px 50px rgb(64, 20, 146)); }
+  50% { filter: drop-shadow(5px 5px 50px rgb(140, 69, 182)) drop-shadow(-5px -5px 50px rgb(140, 69, 182)); }
+  100% { filter: drop-shadow(5px 5px 50px rgb(64, 20, 146)) drop-shadow(-5px -5px 50px rgb(64, 20, 146)); }
 }
 </style>

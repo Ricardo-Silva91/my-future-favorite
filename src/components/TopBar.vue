@@ -2,12 +2,12 @@
   <div class="top-bar">
     <div class="top-bar__left">
       <a href="/">
-        <button-svg class="frame"></button-svg>
+        <button-svg class="top-nar__logo"></button-svg>
       </a>
     </div>
     <div class="top-bar__right">
       <TopBarLink label="How it works" path="https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/README.md" />
-      <TopBarLink label="Submit new artist" path="#" />
+      <TopBarLink label="Submit new artist" path="https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/docs/how-to-submit.md" />
     </div>
   </div>
 </template>
@@ -22,7 +22,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .top-bar {
   display: flex;
@@ -38,12 +37,9 @@ export default {
 }
 
 
-.frame {
-  display: block;
+.top-nar__logo {
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
   fill: rgba(116, 112, 112, 0.542);
   cursor: pointer;
 }

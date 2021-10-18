@@ -1,44 +1,47 @@
 <template>
-  <div class="main-section" v-if="status === 'before'">
-    <div class="landing-section">
+  <div class="main-section">
+
+    <div class="landing-section" v-if="status === 'before'">
       <get-artist-button @click="chooseArtist()"></get-artist-button>
-      <!-- <button @click="chooseArtist()">Get Artist</button> -->
       <label>Filter by genre</label>
-      <select class="select" @change="handleGenreChange($event)">
+      <select @change="handleGenreChange($event)">
         <option v-for="genre, index in genres" :key="genre" :value="index">
           {{ genre === '' ? 'all' : genre }}
         </option>
       </select>
     </div>
-  </div>
-  <div class="main-section" v-if="status === 'loading'">
-    loading
-  </div>
-  <div class="main-section" v-if="status === 'ready'">
-    <div class="artist-section">
-      <card
-        :item="artistData.info"
-        :revealTimeout="100"
-        title="open artist page in spotify">
-      </card>
+
+    <div class="loading-section" v-if="status === 'loading'">
+      loading
     </div>
     
-    <h2
-      :class="{
-        'releases': true,
-        'releases--visible': releasesVisible
-      }">
-      Releases
-    </h2>
-    <div class="albums-section">
-      <card
-        class="albums-section__album"
-        v-for="album, index in artistData.albums"
-        :key="album.id"
-        :item="album"
-        :revealTimeout="500 * (index + 1)"
-        title="open album page in spotify">
-      </card>
+    <div class="ready-section" v-if="status === 'ready'">
+      <div class="artist-section">
+        <card
+          :item="artistData.info"
+          :revealTimeout="100"
+          title="open artist page in spotify">
+        </card>
+      </div>
+
+      <h2
+        :class="{
+          'releases': true,
+          'releases--visible': releasesVisible
+        }"
+      >
+        Releases
+      </h2>
+      <div class="albums-section">
+        <card
+          class="albums-section__album"
+          v-for="album, index in artistData.albums"
+          :key="album.id"
+          :item="album"
+          :revealTimeout="500 * (index + 1)"
+          title="open album page in spotify">
+        </card>
+      </div>
     </div>
   </div>
 </template>
@@ -77,7 +80,7 @@ export default {
     },
     getArtists: async function () {
       this.token = await getToken();
-      if (this.token.split){
+      if (this.token.split) {
         const artistDataArray = await fetchArtistsData(this.token, artistArray);
         this.sortedAndFilteredArtists = sortAndFilterArtistsByPopularity(artistDataArray);
         this.genres = getGenresFromArtistArray(this.sortedAndFilteredArtists);
@@ -120,7 +123,7 @@ $breakpoint-tablet: 768px;
     margin-top: 5rem;
   }
 
-  .select {
+  select {
     color: rgba(201, 201, 201, 0.576);
     background-color: #0e0f10;
     border-radius: 8px;
