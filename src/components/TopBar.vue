@@ -6,7 +6,7 @@
       </a>
     </div>
     <div class="top-bar__right">
-      <TopBarLink label="How it works" path="#" />
+      <TopBarLink label="How it works" path="https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/README.md" />
       <TopBarLink label="Submit new artist" path="#" />
     </div>
   </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="top-bar-link">
-    <a :href="path" class="link">
+    <a :href="path" class="link" target="_blank">
       {{ label }}
     </a>
   </div>
