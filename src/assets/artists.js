@@ -1,4 +1,4 @@
-[
+export default [
     "5uVYw2RYW9HzDc7yAgoCoO",
     "1Q2lebZd9A7fFI1pMat3aP",
     "1SruPFUZlgfkHhcSpkq9Sv",
@@ -7,5 +7,6 @@
     "1VsdsRd4Wi6vlreRcB7kUw",
     "3TjtpTSma6jLGTvhHHIYby",
     "2axKBPoEjeWxT8dM5cHi4n",
-    "3taqtvhYQxgPoxygu1GkKg"
-]
+    "3taqtvhYQxgPoxygu1GkKg",
+    "78G7XiB6I8TfWiYrHhOpXl",
+];

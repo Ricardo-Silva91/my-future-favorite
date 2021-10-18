@@ -1,37 +1,43 @@
 <template>
-  <button>Get Artist</button>
+  <div class="wrapper">
+    <ButtonSvg class="frame"></ButtonSvg>
+  </div>
 </template>
 
 <script>
+import ButtonSvg from './svg-components/ButtonSvg.vue';
+
 export default {
   name: 'GetArtistButton',
-  props: {}
+  components: {
+    ButtonSvg
+  }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-button {
-  height:10rem;
-  width:100%;
-  font-size: 3rem;
-  cursor: pointer;
-  border:none;
-  border-radius:50px;
-  transition:0.3s;
-  background-color: transparent;
-  /* box-shadow: 5px 5px 50px rgb(64, 20, 146),-5px -5px 50px rgb(64, 20, 146); */
-  filter: drop-shadow(5px 5px 50px rgb(64, 20, 146)) drop-shadow(-5px -5px 50px rgb(64, 20, 146));
-  transition:0.5s;
-  border: 2px solid rgb(201 201 201 / 5%);
-  border-radius: 30px;
-  padding: 1rem;
-  color: rgba(201, 201, 201, 0.576);
-  text-transform: uppercase;
+.wrapper {
+  position: relative;
+  animation: glow 3s infinite;
+  overflow: visible;
+  min-width: 10rem;
+  height: 10rem;
+  transition: transform 500ms ease-in-out;
 }
 
-button:hover {
-  animation: glow 3s infinite ;
+.wrapper:hover {
+  transform: scale(1.05);
+}
+
+.frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  fill: rgba(116, 112, 112, 0.542);
+  cursor: pointer;
 }
 
 @keyframes glow{

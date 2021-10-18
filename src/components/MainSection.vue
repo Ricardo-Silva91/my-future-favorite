@@ -4,7 +4,7 @@
       <get-artist-button @click="chooseArtist()"></get-artist-button>
       <!-- <button @click="chooseArtist()">Get Artist</button> -->
       <label>Filter by genre</label>
-      <select @change="handleGenreChange($event)">
+      <select class="select" @change="handleGenreChange($event)">
         <option v-for="genre, index in genres" :key="genre" :value="index">
           {{ genre === '' ? 'all' : genre }}
         </option>
@@ -50,7 +50,7 @@ import {
   getToken,
 } from '../utilities/fetchers';
 import { getGenresFromArtistArray, getRandomArtistFromArray, sortAndFilterArtistsByPopularity } from '../utilities/utils';
-import artistArray from '../assets/artists.json';
+import artistArray from '../assets/artists';
 import Card from './Card.vue';
 import GetArtistButton from './GetArtistButton.vue';
 
@@ -112,12 +112,20 @@ $breakpoint-tablet: 768px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10% 40%;
+  padding: 10% 0;
   flex-wrap: wrap;
 
   label {
     color: rgba(201, 201, 201, 0.576);
-    margin-top: 2rem;
+    margin-top: 5rem;
+  }
+
+  .select {
+    color: rgba(201, 201, 201, 0.576);
+    background-color: #0e0f10;
+    border-radius: 8px;
+    font-size: larger;
+    margin-top: 1rem;
   }
 }
 

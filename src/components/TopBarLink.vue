@@ -19,22 +19,20 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .top-bar-link {
-  margin-left: 1rem;
-  transition: opacity 250ms ease-in-out;
+  margin-left: 2rem;
+  transition: transform 500ms ease-in-out;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 .link {
-  color: inherit;
+  color: rgba(201, 201, 201, 0.933);
   text-decoration: none;
 }
 
 .top-bar-link:hover {
   opacity: 0.5;
-  animation-name: link-hover;
-  animation-duration: 2s;
-  animation-iteration-count: infinite;
-  animation-timing-function: ease-in-out;
-  -webkit-animation-timing-function: ease-in-out;
+  transform: scale(1.05);
 }
 
 @keyframes link-hover {
