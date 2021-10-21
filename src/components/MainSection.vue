@@ -3,12 +3,23 @@
 
     <div class="landing-section" v-if="status === 'before'">
       <get-artist-button @click="chooseArtist()"></get-artist-button>
-      <label>Filter by genre</label>
-      <select @change="handleGenreChange($event)">
-        <option v-for="genre, index in genres" :key="genre" :value="index">
-          {{ genre === '' ? 'all' : genre }}
-        </option>
-      </select>
+      <div class="landing-section__sort-and-filter">
+        <div class="landing-section__field">
+          <label for="sort">Sort by</label>
+          <select name="sort" id="sort" @change="handleSortChange($event)">
+            <option value="popularity">Popularity</option>
+            <option value="followers">Number of Followers</option>
+          </select>
+        </div>
+        <div class="landing-section__field">
+          <label for="genre">Filter by genre</label>
+          <select name="genre" id="genre" @change="handleGenreChange($event)">
+            <option v-for="genre, index in genres" :key="genre" :value="index">
+              {{ genre === '' ? 'all' : genre }}
+            </option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <div class="loading-section" v-if="status === 'loading'">
@@ -52,7 +63,7 @@ import {
   fetchArtistsData,
   getToken,
 } from '../utilities/fetchers';
-import { getGenresFromArtistArray, getRandomArtistFromArray, sortAndFilterArtistsByPopularity } from '../utilities/utils';
+import { getGenresFromArtistArray, getRandomArtistFromArray, sortAndFilterArtists } from '../utilities/utils';
 import artistArray from '../assets/artists';
 import Card from './Card.vue';
 import GetArtistButton from './GetArtistButton.vue';
@@ -65,9 +76,11 @@ export default {
     status: 'before',
     releasesVisible: false,
     token: null,
+    artistDataArray: [],
     sortedAndFilteredArtists: [],
     genres: [],
     selectedGenre: 0,
+    selectedSort: 'popularity',
   }),
   props: {},
   created: function () {
@@ -78,11 +91,18 @@ export default {
       const newVal = event.target.value;
       this.selectedGenre = newVal;
     },
+    handleSortChange: function(event) {
+      const newVal = event.target.value;
+      this.selectedSort = newVal;
+
+      this.sortedAndFilteredArtists = sortAndFilterArtists(this.artistDataArray, this.selectedSort);
+      this.genres = getGenresFromArtistArray(this.sortedAndFilteredArtists);
+    },
     getArtists: async function () {
       this.token = await getToken();
       if (this.token.split) {
-        const artistDataArray = await fetchArtistsData(this.token, artistArray);
-        this.sortedAndFilteredArtists = sortAndFilterArtistsByPopularity(artistDataArray);
+        this.artistDataArray = await fetchArtistsData(this.token, artistArray);
+        this.sortedAndFilteredArtists = sortAndFilterArtists(this.artistDataArray, this.selectedSort);
         this.genres = getGenresFromArtistArray(this.sortedAndFilteredArtists);
       }
     },
@@ -118,18 +138,33 @@ $breakpoint-tablet: 768px;
   padding: 10% 0;
   flex-wrap: wrap;
 
-  label {
-    color: rgba(201, 201, 201, 0.576);
-    margin-top: 5rem;
+  &__sort-and-filter {
+    width: 60%;
+    margin-top: 7rem;
+    justify-content: space-around;
+    display: flex;
+    flex-wrap: wrap;
+
+    label {
+      color: rgba(201, 201, 201, 0.576);
+    }
+  
+    select {
+      width: 14rem;
+      color: rgba(201, 201, 201, 0.576);
+      background-color: #0e0f10;
+      border-radius: 8px;
+      font-size: larger;
+    }
   }
 
-  select {
-    color: rgba(201, 201, 201, 0.576);
-    background-color: #0e0f10;
-    border-radius: 8px;
-    font-size: larger;
+  &__field {
     margin-top: 1rem;
+    margin-left: 1rem;
+    display: flex;
+    flex-direction: column;
   }
+
 }
 
 .artist-section {
@@ -168,7 +203,7 @@ $breakpoint-tablet: 768px;
     flex-direction: column;
     align-items: center;
     max-width: calc(20% - 1rem);
-    flex: 1 0 21%; /* explanation below */
+    flex: 1 0 21%;
     margin: 1rem;
 
     @media (max-width: $breakpoint-tablet) {
