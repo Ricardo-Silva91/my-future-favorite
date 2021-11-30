@@ -57,19 +57,21 @@ export default {
       position: absolute;
       visibility: hidden;
       opacity: 0;
+      transition: all 0ms ease-in-out;
     }
 
     & .select__options {
       visibility: visible;
       opacity: 1;
-  display: block;
+      max-width: initial;
+      max-height: initial;
     }
   }
 }
 
 .select__lid {
   position: relative;
-    height: fit-content;
+  height: fit-content;
   padding: 0.5rem 1rem;
   cursor: pointer;
 	background-color: $color-black;
@@ -78,18 +80,21 @@ export default {
   border-image-slice: 1;
   border-width: 1px;
   border-image-source: linear-gradient(to left, $color-primary-purple, $color-primary-purple-light);
+
+  transition: all 500ms ease-in-out;
   
-  transform-style: preserve-3d;
-  backface-visibility:hidden;
-  transform-origin:50% 0%;
-  transition:transform 0.3s;
+  &:hover {
+    border-image-source: linear-gradient(to left, $color-primary-purple-light, $color-primary-purple);
+  }
 }
 
 .select__options {
   visibility: hidden;
-  transition: all 250ms ease-in-out;
+  transition: all 300ms ease-in-out;
   opacity: 0;
-  display: none;
+  max-width: 0;
+  max-height: 0;
+  overflow: hidden;
 
   &__option {
     position: relative;

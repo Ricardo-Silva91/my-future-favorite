@@ -243,6 +243,11 @@ $breakpoint-mobile: 576px;
   border: 1px solid;
   border-image-slice: 1;
   border-image-source: linear-gradient(to left, $color-primary-purple, $color-primary-purple-light);
+  transition: all 500ms ease-in-out;
+  
+  &:hover {
+    border-image-source: linear-gradient(to left, $color-primary-purple-light, $color-primary-purple);
+  }
 }
 
 .catalog-section {
