@@ -7,6 +7,6 @@ export default [
     "1VsdsRd4Wi6vlreRcB7kUw",
     "3TjtpTSma6jLGTvhHHIYby",
     "2axKBPoEjeWxT8dM5cHi4n",
-    "3taqtvhYQxgPoxygu1GkKg",
+    "3taqtvhYQxgPoxygu1GkKg"
     "78G7XiB6I8TfWiYrHhOpXl",
 ];
