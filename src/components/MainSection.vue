@@ -184,6 +184,10 @@ $breakpoint-mobile: 576px;
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
+
+    @media (max-width: $breakpoint-tablet) {
+      width: 100%;
+    }
   }
 
 }
