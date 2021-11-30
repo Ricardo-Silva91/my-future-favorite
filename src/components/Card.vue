@@ -38,7 +38,11 @@ export default {
 <style scoped lang="scss">
 h3 {
   text-align: center;
-  color: rgba(201, 201, 201, 0.576);
+  color:  $color-text-grey;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card {
@@ -69,7 +73,7 @@ h3 {
 
 img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(100% - 4rem);
   object-fit: cover;
 }
 

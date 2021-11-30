@@ -18,7 +18,7 @@ export default {
 
 <style lang="scss">
 body {
-  background-color: #0e0f10;
+  background-color: $background-color;
 }
 
 #app {
@@ -31,6 +31,6 @@ h1,
 h2,
 h3 {
   text-align: center;
-  color: rgba(201, 201, 201, 0.576);
+  color: $color-text-grey;
 }
 </style>

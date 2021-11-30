@@ -3,21 +3,13 @@
 
     <div class="landing-section" v-if="status === 'before'">
       <get-artist-button @click="chooseArtist()"></get-artist-button>
+      <button class="landing-section__catalog-button" @click="handleCatalogClick()">See Full Catalog</button>
       <div class="landing-section__sort-and-filter">
         <div class="landing-section__field">
-          <label for="sort">Sort by</label>
-          <select name="sort" id="sort" @change="handleSortChange($event)">
-            <option value="popularity">Popularity</option>
-            <option value="followers">Number of Followers</option>
-          </select>
+          <Select id="sort" :options="sortOptions" label="Sort By" @valueChange="handleSortChange($event)"></Select>
         </div>
         <div class="landing-section__field">
-          <label for="genre">Filter by genre</label>
-          <select name="genre" id="genre" @change="handleGenreChange($event)">
-            <option v-for="genre, index in genres" :key="genre" :value="index">
-              {{ genre === '' ? 'all' : genre }}
-            </option>
-          </select>
+          <Select id="genre" :options="genres.map((genre, index) => ({ label: genre === '' ? 'all' : genre, value: index }))" label="Filter by genre" @valueChange="handleGenreChange($event)"></Select>
         </div>
       </div>
     </div>
@@ -54,6 +46,17 @@
         </card>
       </div>
     </div>
+    
+    <div class="catalog-section" v-if="status === 'catalog'">
+      <card
+        class="catalog-section__card"
+        v-for="artist, index in sortedAndFilteredArtists"
+        :key="artist.id"
+        :item="artist"
+        :revealTimeout="500 * (index + 1)"
+        title="open artist page in spotify">
+      </card>
+    </div>
   </div>
 </template>
 
@@ -67,9 +70,10 @@ import { getGenresFromArtistArray, getRandomArtistFromArray, sortAndFilterArtist
 import artistArray from '../assets/artists';
 import Card from './Card.vue';
 import GetArtistButton from './GetArtistButton.vue';
+import Select from './Select.vue';
 
 export default {
-  components: { Card, GetArtistButton },
+  components: { Card, GetArtistButton, Select },
   name: 'MainSection',
   data: () => ({
     artistData: null,
@@ -81,22 +85,33 @@ export default {
     genres: [],
     selectedGenre: 0,
     selectedSort: 'popularity',
+    sortOptions: [
+      { label: 'Popularity', value: 'popularity' },
+      { label: 'Number of Followers', value: 'followers' },
+    ]
   }),
   props: {},
   created: function () {
     this.getArtists();
   },
   methods: {
-    handleGenreChange: function(event) {
-      const newVal = event.target.value;
+    handleGenreChange: function(newVal) {
       this.selectedGenre = newVal;
     },
-    handleSortChange: function(event) {
-      const newVal = event.target.value;
+    handleSortChange: function(newVal) {
       this.selectedSort = newVal;
 
       this.sortedAndFilteredArtists = sortAndFilterArtists(this.artistDataArray, this.selectedSort);
       this.genres = getGenresFromArtistArray(this.sortedAndFilteredArtists);
+    },
+    handleCatalogClick: function() {
+      this.sortedAndFilteredArtists = this.artistDataArray.sort((a, b) => {
+        const scoreA = this.selectedSort === 'popularity' ? a.popularity : a.followers.total;
+        const scoreB = this.selectedSort === 'popularity' ? b.popularity : b.followers.total;
+
+        return scoreA > scoreB ? 1 : -1;
+    });
+      this.status = 'catalog';
     },
     getArtists: async function () {
       this.token = await getToken();
@@ -125,6 +140,7 @@ export default {
 
 <style scoped lang="scss">
 $breakpoint-tablet: 768px;
+$breakpoint-mobile: 576px;
 
 .main-section {
   height: 100%;
@@ -135,15 +151,20 @@ $breakpoint-tablet: 768px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10% 0;
+  padding: 10% 0 0;
   flex-wrap: wrap;
 
   &__sort-and-filter {
     width: 60%;
-    margin-top: 7rem;
+    margin-top: 3rem;
     justify-content: space-around;
     display: flex;
     flex-wrap: wrap;
+
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
+      align-items: center;
+    }
 
     label {
       color: rgba(201, 201, 201, 0.576);
@@ -159,8 +180,8 @@ $breakpoint-tablet: 768px;
   }
 
   &__field {
+    width: 25%;
     margin-top: 1rem;
-    margin-left: 1rem;
     display: flex;
     flex-direction: column;
   }
@@ -209,6 +230,34 @@ $breakpoint-tablet: 768px;
     @media (max-width: $breakpoint-tablet) {
       max-width: 100%;
     }
+  }
+}
+
+.landing-section__catalog-button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+	background-color: $color-black;
+  color: $color-text-grey;
+  margin-top: 9rem;
+
+  border: 1px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(to left, $color-primary-purple, $color-primary-purple-light);
+}
+
+.catalog-section {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  row-gap: 3rem;
+  column-gap: 3rem;
+  padding: 0 2rem;
+
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    grid-template-columns: 1fr;
   }
 }
 </style>

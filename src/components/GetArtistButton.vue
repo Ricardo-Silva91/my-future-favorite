@@ -15,7 +15,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .get-artist-button {
   position: relative;
   animation: glow 3s infinite;
@@ -40,8 +40,8 @@ export default {
 }
 
 @keyframes glow{
-  0% { filter: drop-shadow(5px 5px 50px rgb(64, 20, 146)) drop-shadow(-5px -5px 50px rgb(64, 20, 146)); }
-  50% { filter: drop-shadow(5px 5px 50px rgb(140, 69, 182)) drop-shadow(-5px -5px 50px rgb(140, 69, 182)); }
-  100% { filter: drop-shadow(5px 5px 50px rgb(64, 20, 146)) drop-shadow(-5px -5px 50px rgb(64, 20, 146)); }
+  0% { filter: drop-shadow(5px 5px 50px $color-play-shadow  ) drop-shadow(-5px -5px 50px $color-play-shadow ); }
+  50% { filter: drop-shadow(5px 5px 50px $color-play-shadow-light) drop-shadow(-5px -5px 50px $color-play-shadow-light); }
+  100% { filter: drop-shadow(5px 5px 50px $color-play-shadow  ) drop-shadow(-5px -5px 50px $color-play-shadow ); }
 }
 </style>
