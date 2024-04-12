@@ -4,15 +4,8 @@
   </div>
 </template>
 
-<script>
-import ButtonSvg from './svg-components/ButtonSvg.vue';
-
-export default {
-  name: 'GetArtistButton',
-  components: {
-    ButtonSvg
-  }
-}
+<script setup lang="ts">
+import ButtonSvg from './svg-components/ButtonSvg.vue'
 </script>
 
 <style scoped lang="scss">
@@ -39,9 +32,18 @@ export default {
   cursor: pointer;
 }
 
-@keyframes glow{
-  0% { filter: drop-shadow(5px 5px 50px $color-play-shadow  ) drop-shadow(-5px -5px 50px $color-play-shadow ); }
-  50% { filter: drop-shadow(5px 5px 50px $color-play-shadow-light) drop-shadow(-5px -5px 50px $color-play-shadow-light); }
-  100% { filter: drop-shadow(5px 5px 50px $color-play-shadow  ) drop-shadow(-5px -5px 50px $color-play-shadow ); }
+@keyframes glow {
+  0% {
+    filter: drop-shadow(5px 5px 50px $color-play-shadow)
+      drop-shadow(-5px -5px 50px $color-play-shadow);
+  }
+  50% {
+    filter: drop-shadow(5px 5px 50px $color-play-shadow-light)
+      drop-shadow(-5px -5px 50px $color-play-shadow-light);
+  }
+  100% {
+    filter: drop-shadow(5px 5px 50px $color-play-shadow)
+      drop-shadow(-5px -5px 50px $color-play-shadow);
+  }
 }
 </style>

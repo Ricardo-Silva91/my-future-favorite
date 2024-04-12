@@ -1,0 +1,16 @@
+body {
+  background-color: $background-color;
+}
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  text-align: center;
+  color: $color-text-grey;
+}

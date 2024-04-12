@@ -1,29 +1,32 @@
 <template>
-  <div class="top-bar">
+  <header class="top-bar">
     <div class="top-bar__left">
       <a href="/">
         <button-svg class="top-nar__logo"></button-svg>
       </a>
     </div>
     <div class="top-bar__right">
-      <TopBarLink label="How it works" path="https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/README.md" />
-      <TopBarLink label="Submit new artist" path="https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/docs/how-to-submit.md" />
+      <TopBarLink
+        label="How it works"
+        path="https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/README.md"
+      />
+      <!-- <TopBarLink label="Submit new artist" path="https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/docs/how-to-submit.md" /> -->
+      <TopBarLink label="Submit new artist" routerLink="/about" />
     </div>
-  </div>
+  </header>
 </template>
 
-<script>
+<script setup lang="ts">
 import ButtonSvg from './svg-components/ButtonSvg.vue'
 import TopBarLink from './TopBarLink.vue'
-export default {
-  components: { TopBarLink, ButtonSvg },
-  name: 'TopBar',
-  props: {}
-}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .top-bar {
+  position: absolute;
+  width: calc(100% - 2rem);
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,7 +38,6 @@ export default {
   width: 3rem;
   height: 3rem;
 }
-
 
 .top-nar__logo {
   width: 100%;

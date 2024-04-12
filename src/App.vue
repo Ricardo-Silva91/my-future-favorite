@@ -1,36 +1,36 @@
-<template>
-  <TopBar/>
-  <MainSection/>
-</template>
-
-<script>
-import MainSection from './components/MainSection.vue'
+<script setup lang="ts">
+import { RouterView } from 'vue-router'
 import TopBar from './components/TopBar.vue'
+import { onMounted } from 'vue'
+import { submitBandcampBand } from './utilities/fetchers'
+// import HelloWorld from './components/HelloWorld.vue'
 
-export default {
-  name: 'App',
-  components: {
-    TopBar,
-    MainSection
-  }
-}
+onMounted(() => {
+  // submitBandcampBand('https://moodymann.bandcamp.com/music')
+})
 </script>
 
-<style lang="scss">
-body {
-  background-color: $background-color;
-}
+<template>
+  <!-- <header>
+    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+    <div class="wrapper">
+      <HelloWorld msg="You did it!" />
 
-h1,
-h2,
-h3 {
-  text-align: center;
-  color: $color-text-grey;
+      <nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
+      </nav>
+    </div>
+  </header> -->
+  <TopBar />
+  <div class="content">
+    <RouterView />
+  </div>
+</template>
+
+<style scoped lang="scss">
+.content {
+  margin-top: $header-height;
 }
 </style>

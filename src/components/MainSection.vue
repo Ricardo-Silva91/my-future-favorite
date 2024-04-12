@@ -1,35 +1,40 @@
 <template>
   <div class="main-section">
-
     <div class="landing-section" v-if="status === 'before'">
       <get-artist-button @click="chooseArtist()"></get-artist-button>
-      <button class="landing-section__catalog-button" @click="handleCatalogClick()">See Full Catalog</button>
+      <button class="landing-section__catalog-button" @click="handleCatalogClick()">
+        See Full Catalog
+      </button>
       <div class="landing-section__sort-and-filter">
         <div class="landing-section__field">
-          <Select id="sort" :options="sortOptions" label="Sort By" @valueChange="handleSortChange($event)"></Select>
+          <Select
+            id="filter-app"
+            :options="appFilterOptions"
+            label="Filter By App"
+            @valueChange="handleAppFilterChange($event)"
+          ></Select>
         </div>
         <div class="landing-section__field">
-          <Select id="genre" :options="genres.map((genre, index) => ({ label: genre === '' ? 'all' : genre, value: index }))" label="Filter by genre" @valueChange="handleGenreChange($event)"></Select>
+          <Select
+            id="tags"
+            :options="tags.map((tag) => ({ label: tag === '' ? 'all' : tag, value: tag }))"
+            label="Filter by tag"
+            @valueChange="handleTagFilterChange($event)"
+          ></Select>
         </div>
       </div>
     </div>
 
-    <div class="loading-section" v-if="status === 'loading'">
-      loading
-    </div>
-    
-    <div class="ready-section" v-if="status === 'ready'">
+    <div class="loading-section" v-if="status === 'loading'">loading</div>
+
+    <div class="ready-section" v-if="status === 'ready' && artistData">
       <div class="artist-section">
-        <card
-          :item="artistData.info"
-          :revealTimeout="100"
-          title="open artist page in spotify">
-        </card>
+        <card :item="artistData" :revealTimeout="100" title="open artist page in spotify"> </card>
       </div>
 
       <h2
         :class="{
-          'releases': true,
+          releases: true,
           'releases--visible': releasesVisible
         }"
       >
@@ -38,103 +43,124 @@
       <div class="albums-section">
         <card
           class="albums-section__album"
-          v-for="album, index in artistData.albums"
-          :key="album.id"
+          v-for="(album, index) in artistData.albums.slice(0, 4)"
+          :key="index"
           :item="album"
           :revealTimeout="500 * (index + 1)"
-          title="open album page in spotify">
+          title="open album page in spotify"
+        >
         </card>
       </div>
     </div>
-    
+
     <div class="catalog-section" v-if="status === 'catalog'">
       <card
         class="catalog-section__card"
-        v-for="artist, index in sortedAndFilteredArtists"
-        :key="artist.id"
+        v-for="(artist, index) in catalogItems"
+        :key="artist.url"
         :item="artist"
         :revealTimeout="500 * (index + 1)"
-        title="open artist page in spotify">
+        title="open artist page in spotify"
+      >
       </card>
     </div>
   </div>
 </template>
 
-<script>
-import { 
-  fetchAlbumsFromArtist,
-  fetchArtistsData,
-  getToken,
-} from '../utilities/fetchers';
-import { getGenresFromArtistArray, getRandomArtistFromArray, sortAndFilterArtists } from '../utilities/utils';
-import artistArray from '../assets/artists';
-import Card from './Card.vue';
-import GetArtistButton from './GetArtistButton.vue';
-import Select from './Select.vue';
+<script setup lang="ts">
+import { type ICardItem, type IArtist } from '@/interfaces/data.interface'
+import { useArtistsStore } from '@/stores/artists'
+import { computed, onMounted, ref, watch } from 'vue'
+import Card from './Card.vue'
+import GetArtistButton from './GetArtistButton.vue'
+import Select from './Select.vue'
 
-export default {
-  components: { Card, GetArtistButton, Select },
-  name: 'MainSection',
-  data: () => ({
-    artistData: null,
-    status: 'before',
-    releasesVisible: false,
-    token: null,
-    artistDataArray: [],
-    sortedAndFilteredArtists: [],
-    genres: [],
-    selectedGenre: 0,
-    selectedSort: 'popularity',
-    sortOptions: [
-      { label: 'Popularity', value: 'popularity' },
-      { label: 'Number of Followers', value: 'followers' },
+const artistStore = useArtistsStore()
+
+onMounted(() => {
+  ;(async () => {
+    await artistStore.fetchArtists()
+
+    status.value = 'before'
+  })()
+})
+
+const tags = computed(() => artistStore.tags)
+const artists = computed<IArtist[]>(() => artistStore.artists)
+
+const status = ref<'before' | 'loading' | 'ready' | 'catalog'>('loading')
+const sortedAndFilteredArtists = computed<IArtist[]>(() => {
+  const appFilteredArtists = appFilter.value
+    ? artists.value.filter((artist) => artist.app === appFilter.value)
+    : artists.value
+  const tagFilteredArtists = tagFilter.value
+    ? appFilteredArtists.filter((artist) => artist.tags.has(tagFilter.value || ''))
+    : appFilteredArtists
+
+  return tagFilteredArtists
+})
+const appFilterOptions = ref([
+  { value: 'bandcamp', label: 'Bandcamp' },
+  { value: 'spotify', label: 'Spotify' }
+])
+const artistData = ref<ICardItem>()
+const releasesVisible = ref(false)
+
+const appFilter = ref<'spotify' | 'bandcamp' | undefined>(undefined)
+const tagFilter = ref<string | undefined>(undefined)
+
+const catalogItems = computed<ICardItem[]>(() =>
+  sortedAndFilteredArtists.value.map((artist) => ({
+    image: artist.profilePicUrl,
+    name: artist.name,
+    title: artist.name,
+    url: artist.uri || artist.external_url || artist.url,
+    albums: Array.from(artist.recentAlbums).map((album) => ({
+      albums: [],
+      image: album.coverUrl,
+      name: album.name,
+      title: album.name,
+      url: album.external_url || album.url
+    }))
+  }))
+)
+
+const chooseArtist = () => {
+  const chosenArtist =
+    sortedAndFilteredArtists.value[
+      Math.floor(Math.random() * sortedAndFilteredArtists.value.length)
     ]
-  }),
-  props: {},
-  created: function () {
-    this.getArtists();
-  },
-  methods: {
-    handleGenreChange: function(newVal) {
-      this.selectedGenre = newVal;
-    },
-    handleSortChange: function(newVal) {
-      this.selectedSort = newVal;
 
-      this.sortedAndFilteredArtists = sortAndFilterArtists(this.artistDataArray, this.selectedSort);
-      this.genres = getGenresFromArtistArray(this.sortedAndFilteredArtists);
-    },
-    handleCatalogClick: function() {
-      this.sortedAndFilteredArtists = this.artistDataArray.sort((a, b) => {
-        const scoreA = this.selectedSort === 'popularity' ? a.popularity : a.followers.total;
-        const scoreB = this.selectedSort === 'popularity' ? b.popularity : b.followers.total;
+  console.log({ chosenArtist, sortedAndFilteredArtists: sortedAndFilteredArtists.value })
 
-        return scoreA > scoreB ? 1 : -1;
-    });
-      this.status = 'catalog';
-    },
-    getArtists: async function () {
-      this.token = await getToken();
-      if (this.token.split) {
-        this.artistDataArray = await fetchArtistsData(this.token, artistArray);
-        this.sortedAndFilteredArtists = sortAndFilterArtists(this.artistDataArray, this.selectedSort);
-        this.genres = getGenresFromArtistArray(this.sortedAndFilteredArtists);
-      }
-    },
-    chooseArtist: async function () {
-      this.status = 'loading';
-
-      const chosenArtist = getRandomArtistFromArray(this.sortedAndFilteredArtists, this.genres[this.selectedGenre]);
-      const chosenArtistAlbums = await fetchAlbumsFromArtist(this.token, chosenArtist.id);
-
-      this.artistData = { info: chosenArtist, albums: chosenArtistAlbums };
-      this.status = 'ready';
-
-      setTimeout(() => {
-        this.releasesVisible = true;
-      }, 300);
-    }
+  artistData.value = {
+    image: chosenArtist.profilePicUrl,
+    name: chosenArtist.name,
+    title: chosenArtist.name,
+    url: chosenArtist.uri || chosenArtist.external_url || chosenArtist.url,
+    albums: Array.from(chosenArtist.recentAlbums).map((album) => ({
+      albums: [],
+      image: album.coverUrl,
+      name: album.name,
+      title: album.name,
+      url: album.external_url || album.url
+    }))
   }
+
+  status.value = 'ready'
+}
+const handleCatalogClick = () => {
+  status.value = 'catalog'
+}
+const handleAppFilterChange = (event: 'spotify' | 'bandcamp') => {
+  appFilter.value = event
+}
+const handleTagFilterChange = (event: string) => {
+  console.log({ event })
+
+  tagFilter.value = event
+
+  console.log({ tagFilter })
 }
 </script>
 
@@ -169,7 +195,7 @@ $breakpoint-mobile: 576px;
     label {
       color: rgba(201, 201, 201, 0.576);
     }
-  
+
     select {
       width: 14rem;
       color: rgba(201, 201, 201, 0.576);
@@ -189,7 +215,6 @@ $breakpoint-mobile: 576px;
       width: 100%;
     }
   }
-
 }
 
 .artist-section {
@@ -240,7 +265,7 @@ $breakpoint-mobile: 576px;
 .landing-section__catalog-button {
   padding: 0.5rem 1rem;
   cursor: pointer;
-	background-color: $color-black;
+  background-color: $color-black;
   color: $color-text-grey;
   margin-top: 9rem;
 
@@ -248,9 +273,13 @@ $breakpoint-mobile: 576px;
   border-image-slice: 1;
   border-image-source: linear-gradient(to left, $color-primary-purple, $color-primary-purple-light);
   transition: all 500ms ease-in-out;
-  
+
   &:hover {
-    border-image-source: linear-gradient(to left, $color-primary-purple-light, $color-primary-purple);
+    border-image-source: linear-gradient(
+      to left,
+      $color-primary-purple-light,
+      $color-primary-purple
+    );
   }
 }
 

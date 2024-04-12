@@ -1,19 +1,21 @@
 <template>
   <div class="top-bar-link">
-    <a :href="path" class="top-bar-link__link" target="_blank">
+    <a v-if="!routerLink" :href="path" class="top-bar-link__link" target="_blank">
       {{ label }}
     </a>
+    <RouterLink v-else :to="routerLink || ''" class="top-bar-link__link">
+      {{ label }}
+    </RouterLink>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'TopBarLink',
-  props: {
-    label: String,
-    path: String,
-  }
-}
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+defineProps<{
+  label: string
+  path?: string
+  routerLink?: string
+}>()
 </script>
 
 <style scoped lang="scss">
@@ -35,8 +37,14 @@ export default {
 }
 
 @keyframes link-hover {
-  0% { transform: scale(100%); }
-  50% { transform: scale(110%); }
-  100% { transform: scale(100%); }
+  0% {
+    transform: scale(100%);
+  }
+  50% {
+    transform: scale(110%);
+  }
+  100% {
+    transform: scale(100%);
+  }
 }
 </style>

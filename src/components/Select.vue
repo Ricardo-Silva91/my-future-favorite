@@ -1,9 +1,9 @@
 <template>
   <div :class="['select', `select--${open ? 'open' : 'closed'}`]">
-    <div class="select__lid" @click="toggleOpen()">{{label}}</div>
+    <div class="select__lid" @click="toggleOpen()">{{ label }}</div>
     <div class="select__options">
-      <div 
-        v-for="option, index in options"
+      <div
+        v-for="(option, index) in options"
         class="select__options__option"
         :key="option.value"
         :value="index"
@@ -12,34 +12,34 @@
         {{ option.label }}
       </div>
     </div>
-	</div>
+  </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: 'Select',
   props: {
-    options: Array,
+    options: Array<{ label: string; value: string }>,
     id: String,
-    label: String,
+    label: String
   },
-  emits: ["valueChange"], 
+  emits: ['valueChange'],
   data: () => ({
-    open: false,
+    open: false
   }),
   computed: {
     translateValue() {
-      return this.open ? 40 : 1;
+      return this.open ? 40 : 1
     }
   },
   methods: {
     toggleOpen() {
-      this.open = !this.open;
+      this.open = !this.open
     },
-    handleChange(newVal) {
-      this.$emit('valueChange', newVal);
-      this.toggleOpen();
-    },
+    handleChange(newVal: string) {
+      this.$emit('valueChange', newVal)
+      this.toggleOpen()
+    }
   }
 }
 </script>
@@ -47,7 +47,7 @@ export default {
 <style scoped lang="scss">
 .select {
   color: $color-text-grey;
-	text-align:center;
+  text-align: center;
   display: flex;
   justify-content: center;
   max-width: 100%;
@@ -64,7 +64,11 @@ export default {
       visibility: visible;
       opacity: 1;
       max-width: initial;
-      max-height: initial;
+      max-height: 200px;
+      overflow-y: auto;
+
+      scrollbar-color: $color-primary-purple transparent;
+      scrollbar-width: thin;
     }
   }
 }
@@ -74,7 +78,7 @@ export default {
   height: fit-content;
   padding: 0.5rem 1rem;
   cursor: pointer;
-	background-color: $color-black;
+  background-color: $color-black;
 
   border: 10px solid;
   border-image-slice: 1;
@@ -82,9 +86,13 @@ export default {
   border-image-source: linear-gradient(to left, $color-primary-purple, $color-primary-purple-light);
 
   transition: all 500ms ease-in-out;
-  
+
   &:hover {
-    border-image-source: linear-gradient(to left, $color-primary-purple-light, $color-primary-purple);
+    border-image-source: linear-gradient(
+      to left,
+      $color-primary-purple-light,
+      $color-primary-purple
+    );
   }
 }
 
@@ -121,5 +129,4 @@ export default {
     }
   }
 }
-
 </style>

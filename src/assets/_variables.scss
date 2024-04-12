@@ -1,0 +1,21 @@
+$color-primary: #1db954;
+$color-primary-light: #40e178;
+$color-primary-purple: rgb(64, 20, 146);
+$color-primary-purple-light: rgb(140, 69, 182);
+$color-black: #0e0f10;
+$color-white: white;
+
+$color-text-grey: rgba(201, 201, 201, 0.576);
+$background-color: $color-black;
+
+// $color-play-circle: $color-primary;
+// $color-play-path: $color-white;
+// $color-play-shadow: $color-primary;
+// $color-play-shadow-light: $color-primary-light;
+
+$color-play-circle: $color-primary-purple;
+$color-play-path: $color-black;
+$color-play-shadow: $color-primary-purple;
+$color-play-shadow-light: $color-primary-purple-light;
+
+$header-height: 5rem;
