@@ -1,6 +1,8 @@
 import { config } from 'dotenv-safe'
 // import { GoogleSpreadsheetRow } from 'google-spreadsheet'
-config()
+config({
+  example: process.env.CI ? '.env.ci.example' : '.env.example'
+})
 
 export const getSpotifyToken = async () => {
   const client_id = process.env.SPOTIFY_CLIENT_ID || 'p'

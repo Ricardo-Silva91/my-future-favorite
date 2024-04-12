@@ -2,7 +2,9 @@ import { GoogleSpreadsheet } from 'google-spreadsheet'
 import { JWT } from 'google-auth-library'
 
 import { config } from 'dotenv-safe'
-config()
+config({
+  example: process.env.CI ? '.env.ci.example' : '.env.example'
+})
 
 const keys = [
   'url',
