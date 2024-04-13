@@ -36,3 +36,10 @@ jobs:
 
       - name: Maintain Database
         run: npm run perform-data-maintenance
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_SECRET_KEY: ${{ secrets.SPOTIFY_SECRET_KEY }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          NUMBER_OF_BC_ALBUMS_TO_CHECK: ${{ secrets.NUMBER_OF_BC_ALBUMS_TO_CHECK }}
