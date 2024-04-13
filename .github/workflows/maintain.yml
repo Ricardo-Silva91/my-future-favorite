@@ -31,5 +31,8 @@ jobs:
       - name: install
         run: npm i
 
+      - name: install playwright
+        run: npm run playwright:init
+
       - name: Maintain Database
         run: npm run perform-data-maintenance

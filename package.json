@@ -12,6 +12,7 @@
     "test:e2e": "playwright test",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
+    "playwright:init": "npx playwright install",
     "scrape-bandcamp-band": "npx playwright test scripts/scrapeBandcampBand.spec.ts",
     "perform-data-maintenance": "npx playwright test scripts/dataMaintenance.spec.ts",
     "migrate-artists": "npx playwright test scripts/migrateArtists.spec.ts",
