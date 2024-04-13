@@ -19,7 +19,7 @@ test('perform data maintenance', async ({ page, context }) => {
   const spotifyArtists = rowsRaw.filter((row) => row.get('app') === 'spotify')
   const bandcampArtists = rowsRaw.filter((row) => row.get('app') === 'bandcamp')
 
-  if (skipSpotify) {
+  if (!skipSpotify) {
     // Update Spotify Artists
     console.log(`updating ${spotifyArtists.length} spotify artists`)
 
