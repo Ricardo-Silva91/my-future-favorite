@@ -25,7 +25,9 @@
       </div>
     </div>
 
-    <div class="loading-section" v-if="status === 'loading'">loading</div>
+    <div class="loading-section" v-if="status === 'loading'">
+      <Loader></Loader>
+    </div>
 
     <div class="ready-section" v-if="status === 'ready' && artistData">
       <div class="artist-section">
@@ -74,6 +76,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import Card from './Card.vue'
 import GetArtistButton from './GetArtistButton.vue'
 import Select from './Select.vue'
+import Loader from './Loader.vue'
 
 const artistStore = useArtistsStore()
 
@@ -94,7 +97,7 @@ const sortedAndFilteredArtists = computed<IArtist[]>(() => {
     ? artists.value.filter((artist) => artist.app === appFilter.value)
     : artists.value
   const tagFilteredArtists = tagFilter.value
-    ? appFilteredArtists.filter((artist) => artist.tags.has(tagFilter.value || ''))
+    ? appFilteredArtists.filter((artist) => artist.tags.includes(tagFilter.value || ''))
     : appFilteredArtists
 
   return tagFilteredArtists

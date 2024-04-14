@@ -1,3 +1,6 @@
+import type { IArtist } from '@/interfaces/data.interface'
+import { getTodayStamp } from './utils'
+
 export const getToken = async () => {
   const res = await fetch('.netlify/functions/getToken')
 
@@ -12,6 +15,21 @@ export const getArtists = async () => {
   const getArtistsJson = await res.json()
 
   return getArtistsJson.artists
+}
+
+export const saveArtistsInLocalStorage = async (artistArray: IArtist[]) => {
+  const toSave = {
+    date: getTodayStamp(),
+    artistArray
+  }
+
+  window.localStorage.setItem('myFutureFavoriteArtistData', JSON.stringify(toSave))
+}
+
+export const getArtistsFromLocalStorage = (): { date: string; artistArray: IArtist[] } => {
+  const data = window.localStorage.getItem('myFutureFavoriteArtistData')
+
+  return data ? JSON.parse(data) : undefined
 }
 
 export const fetchArtistsData = async (token: string, artistArray: any[]) => {

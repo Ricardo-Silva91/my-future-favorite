@@ -12,7 +12,6 @@ test('perform data maintenance', async ({ page, context }) => {
   test.slow()
 
   const doc = await getDoc()
-  // const sheet = doc.sheetsByIndex[0]
   const rowCount = await getRowCount(doc)
   const { rowsRaw } = await getRows(doc, 0, rowCount)
 

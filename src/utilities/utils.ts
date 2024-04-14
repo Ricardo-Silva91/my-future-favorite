@@ -33,3 +33,10 @@ export const getRandomArtistFromArray = (artistDataArray: any = [], genre = '') 
       : artistDataArray.filter((artist: any) => artist.genres.includes(genre))
   return filteredArtistArray[Math.floor(Math.random() * filteredArtistArray.length)]
 }
+
+export const getTodayStamp = () => {
+  const today = new Date()
+  const dateStamp = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
+
+  return dateStamp
+}

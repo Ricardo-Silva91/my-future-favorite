@@ -21,7 +21,7 @@ export interface IArtist {
   app: 'spotify' | 'bandcamp'
   popularityScore: number
   numberOfFollowers: number
-  tags: Set<string>
+  tags: string[]
   profilePicUrl: string
   recentSales: number
   recentAlbums: IAlbum[]

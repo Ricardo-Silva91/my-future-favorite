@@ -1,7 +1,12 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { IAlbum, IArtist } from '@/interfaces/data.interface'
-import { getArtists } from '@/utilities/fetchers'
+import {
+  getArtists,
+  getArtistsFromLocalStorage,
+  saveArtistsInLocalStorage
+} from '@/utilities/fetchers'
+import { getTodayStamp } from '@/utilities/utils'
 
 export const useArtistsStore = defineStore('artists', () => {
   const artists = ref<IArtist[]>([])
@@ -16,16 +21,24 @@ export const useArtistsStore = defineStore('artists', () => {
     )
   )
   async function fetchArtists() {
-    console.log('fetching')
+    const localArtists = getArtistsFromLocalStorage()
+    const todayStamp = getTodayStamp()
 
-    const artistsRaw = await getArtists()
-    artists.value = artistsRaw.map((artist: any) => ({
-      ...artist,
-      tags: new Set<string>(JSON.parse(artist.tags)),
-      recentAlbums: new Set<IAlbum>(JSON.parse(artist.recentAlbums))
-    }))
+    if (localArtists && localArtists.date === todayStamp) {
+      console.log({ localArtists })
 
-    console.log('fetched')
+      artists.value = localArtists.artistArray
+    } else {
+      const artistsRaw = await getArtists()
+      const resolvedArtists = artistsRaw.map((artist: any) => ({
+        ...artist,
+        tags: Array.from(new Set(JSON.parse(artist.tags))),
+        recentAlbums: JSON.parse(artist.recentAlbums)
+      }))
+      artists.value = resolvedArtists
+
+      saveArtistsInLocalStorage(resolvedArtists)
+    }
   }
 
   return { artists, bandcampArtists, spotifyArtists, tags, fetchArtists }
