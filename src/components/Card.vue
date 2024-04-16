@@ -14,19 +14,26 @@
     >
       <h3>{{ item.name }}</h3>
       <img :src="item.image" />
+      <button v-if="block" class="card__block" @click="handleBlockClick($event, block || '')">
+        Block Artist
+      </button>
     </a>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ICardItem } from '@/interfaces/data.interface'
+import { useArtistsStore } from '@/stores/artists'
 import { onMounted, ref } from 'vue'
+
+const artistStore = useArtistsStore()
 
 const visible = ref(false)
 
 const props = defineProps<{
   item: ICardItem
   revealTimeout: number
+  block?: string
 }>()
 
 onMounted(() => {
@@ -34,6 +41,13 @@ onMounted(() => {
     visible.value = true
   }, props.revealTimeout)
 })
+
+const handleBlockClick = (event: Event, url: string) => {
+  event.preventDefault()
+  event.stopPropagation()
+
+  artistStore.blockArtist(url)
+}
 </script>
 
 <style scoped lang="scss">
@@ -76,6 +90,30 @@ img {
   width: 100%;
   height: calc(100% - 4rem);
   object-fit: cover;
+}
+
+.card__block {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  background-color: $color-black;
+  color: $color-text-grey;
+
+  border: 1px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(to left, $color-primary-purple, $color-primary-purple-light);
+  transition: all 500ms ease-in-out;
+
+  &:hover {
+    border-image-source: linear-gradient(
+      to left,
+      $color-primary-purple-light,
+      $color-primary-purple
+    );
+  }
 }
 
 @keyframes float {

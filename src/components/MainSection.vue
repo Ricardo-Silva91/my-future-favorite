@@ -1,6 +1,12 @@
 <template>
   <div class="main-section">
-    <div class="landing-section" v-if="status === 'before'">
+    <div
+      v-if="status === 'before'"
+      :class="{
+        'landing-section': true,
+        'landing-section--hidden': landingSectionHidden
+      }"
+    >
       <get-artist-button @click="chooseArtist()"></get-artist-button>
       <button class="landing-section__catalog-button" @click="handleCatalogClick()">
         See Full Catalog
@@ -31,7 +37,13 @@
 
     <div class="ready-section" v-if="status === 'ready' && artistData">
       <div class="artist-section">
-        <card :item="artistData" :revealTimeout="100" title="open artist page in spotify"> </card>
+        <card
+          :item="artistData"
+          :revealTimeout="100"
+          title="open artist page in spotify"
+          :block="artistData.blockUrl"
+        >
+        </card>
       </div>
 
       <h2
@@ -63,6 +75,7 @@
         :item="artist"
         :revealTimeout="500 * (index + 1)"
         title="open artist page in spotify"
+        :block="artist?.blockUrl"
       >
       </card>
     </div>
@@ -85,13 +98,19 @@ onMounted(() => {
     await artistStore.fetchArtists()
 
     status.value = 'before'
+
+    setTimeout(() => {
+      landingSectionHidden.value = false
+    }, 0)
   })()
 })
 
 const tags = computed(() => artistStore.tags)
-const artists = computed<IArtist[]>(() => artistStore.artists)
+const artists = computed<IArtist[]>(() => artistStore.availableArtists)
 
 const status = ref<'before' | 'loading' | 'ready' | 'catalog'>('loading')
+const landingSectionHidden = ref(true)
+
 const sortedAndFilteredArtists = computed<IArtist[]>(() => {
   const appFilteredArtists = appFilter.value
     ? artists.value.filter((artist) => artist.app === appFilter.value)
@@ -117,6 +136,7 @@ const catalogItems = computed<ICardItem[]>(() =>
     image: artist.profilePicUrl,
     name: artist.name,
     title: artist.name,
+    blockUrl: artist.url,
     url: artist.uri || artist.external_url || artist.url,
     albums: Array.from(artist.recentAlbums).map((album) => ({
       albums: [],
@@ -129,12 +149,54 @@ const catalogItems = computed<ICardItem[]>(() =>
 )
 
 const chooseArtist = () => {
-  const chosenArtist =
-    sortedAndFilteredArtists.value[
-      Math.floor(Math.random() * sortedAndFilteredArtists.value.length)
-    ]
+  const bandcampArtists = sortedAndFilteredArtists.value.filter(
+    (artist) => artist.app === 'bandcamp'
+  )
+  const spotifyArtists = sortedAndFilteredArtists.value.filter((artist) => artist.app === 'spotify')
 
-  console.log({ chosenArtist, sortedAndFilteredArtists: sortedAndFilteredArtists.value })
+  const chosenBandcampArtists = bandcampArtists.reduce(
+    (acc: { min: number; arr: IArtist[] }, artist: IArtist) => {
+      if (artist.recentSales < acc.min) {
+        return { min: artist.recentSales, arr: [artist] }
+      } else if (artist.recentSales === acc.min) {
+        return { ...acc, arr: [...acc.arr, artist] }
+      }
+
+      return acc
+    },
+    { min: 9999, arr: [] }
+  )
+
+  const chosenSpotifyArtists = spotifyArtists.reduce(
+    (acc: { min: number; arr: IArtist[] }, artist: IArtist) => {
+      if (artist.popularityScore < acc.min) {
+        return { min: artist.popularityScore, arr: [artist] }
+      } else if (artist.popularityScore === acc.min) {
+        return { ...acc, arr: [...acc.arr, artist] }
+      }
+
+      return acc
+    },
+    { min: 9999, arr: [] }
+  )
+
+  console.log({ chosenBandcampArtists, chosenSpotifyArtists })
+
+  if (!chosenBandcampArtists.arr.length && !chosenSpotifyArtists.arr.length) {
+    alert('no artists available 😅\nTry another day please 😊')
+  }
+
+  const arrToUse = !chosenBandcampArtists.arr.length
+    ? chosenSpotifyArtists.arr
+    : !chosenSpotifyArtists.arr.length
+      ? chosenBandcampArtists.arr
+      : Math.random() > 0.5
+        ? chosenBandcampArtists.arr
+        : chosenSpotifyArtists.arr
+
+  const chosenArtist = arrToUse[Math.floor(Math.random() * arrToUse.length)]
+
+  console.log({ chosenArtist })
 
   artistData.value = {
     image: chosenArtist.profilePicUrl,
@@ -147,7 +209,8 @@ const chooseArtist = () => {
       name: album.name,
       title: album.name,
       url: album.external_url || album.url
-    }))
+    })),
+    blockUrl: chosenArtist.url
   }
 
   status.value = 'ready'
@@ -159,11 +222,7 @@ const handleAppFilterChange = (event: 'spotify' | 'bandcamp') => {
   appFilter.value = event
 }
 const handleTagFilterChange = (event: string) => {
-  console.log({ event })
-
   tagFilter.value = event
-
-  console.log({ tagFilter })
 }
 </script>
 
@@ -182,6 +241,17 @@ $breakpoint-mobile: 576px;
   align-items: center;
   padding: 10% 0 0;
   flex-wrap: wrap;
+  opacity: 1;
+  transform: translateY(0);
+
+  transition:
+    opacity 2s ease-in-out,
+    transform 2s cubic-bezier(0, -0.52, 0, 2.14);
+
+  &--hidden {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
   &__sort-and-filter {
     width: 60%;

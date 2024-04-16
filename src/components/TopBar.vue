@@ -6,10 +6,11 @@
       </a>
     </div>
     <div class="top-bar__right">
-      <TopBarLink
+      <TopBarLink label="How it works" routerLink="/about" />
+      <!-- <TopBarLink
         label="How it works"
         path="https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/README.md"
-      />
+      /> -->
       <!-- <TopBarLink label="Submit new artist" path="https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/docs/how-to-submit.md" /> -->
       <TopBarLink label="Submit new artist" routerLink="/about" />
     </div>

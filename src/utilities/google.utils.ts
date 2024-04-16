@@ -49,17 +49,8 @@ export const getRows = async (
 ) => {
   const sheet = doc.sheetsByIndex[options.sheetId]
   const { rowCount } = sheet
-
-  // console.log({ rowCount })
-
   const offsetToUse = offset > rowCount ? rowCount : offset
   const sliceOffset = offsetToUse ? rowCount - offsetToUse : 0
-
-  // console.log({
-  //   rowCount,
-  //   sliceOffset,
-  //   limit
-  // })
 
   const rowsRaw = await sheet.getRows({ offset: sliceOffset, limit })
   const rows = rowsRaw.map((row) =>

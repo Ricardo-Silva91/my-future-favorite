@@ -4,6 +4,7 @@ export interface ICardItem {
   title: string
   name: string
   albums: ICardItem[]
+  blockUrl?: string
 }
 
 export interface IAlbum {

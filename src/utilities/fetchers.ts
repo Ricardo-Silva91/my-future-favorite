@@ -54,6 +54,15 @@ export const fetchArtistsData = async (token: string, artistArray: any[]) => {
   return fetchArtistsDataJson.artists.filter((artist: any) => artist.images.length)
 }
 
+export const getBlockedArtistsFromLocalStorage = (): string[] => {
+  const data = window.localStorage.getItem('myFutureFavoriteBlockedArtists')
+
+  return data ? JSON.parse(data) : []
+}
+export const saveBlockedArtistsInLocalStorage = async (blockedArtists: string[]) => {
+  window.localStorage.setItem('myFutureFavoriteBlockedArtists', JSON.stringify(blockedArtists))
+}
+
 export const fetchAlbumsFromArtist = async (token: string, artistId: string) => {
   const res = await fetch(`https://api.spotify.com/v1/artists/${artistId}/albums?limit=5`, {
     headers: {
