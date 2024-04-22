@@ -38,6 +38,8 @@
 
 <script setup lang="ts">
 import { submitBandcampBand, submitSpotifyArtist } from '@/utilities/fetchers'
+import type { FormKitNode } from 'node_modules/@formkit/core/dist/index.mjs'
+// import { FormKitNode } from 'node_modules\@formkit\core\dist\index.d.mts'
 import { ref, onMounted } from 'vue'
 
 const selectedApp = ref<'spotify' | 'bandcamp'>('spotify')
@@ -46,7 +48,11 @@ const setSelectedApp = (newSelectedApp?: string) => {
   selectedApp.value = newSelectedApp as 'spotify' | 'bandcamp'
 }
 
-const checkSpotifyUrl = ({ value }: { value: string }) => {
+const checkSpotifyUrl: (node: FormKitNode, ...args: any[]) => boolean | Promise<boolean> = (
+  node: FormKitNode,
+  ...args: any[]
+) => {
+  const value = node.value as string
   const resolvedUrl = getLinkFromSubmittedValue(value)
 
   return !!resolvedUrl
