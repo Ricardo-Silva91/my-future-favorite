@@ -20,6 +20,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@formkit/vue": "^1.6.2",
     "@netlify/functions": "^2.6.0",
     "dotenv-safe": "^9.1.0",
     "google-auth-library": "^9.7.0",

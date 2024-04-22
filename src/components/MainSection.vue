@@ -101,7 +101,7 @@ onMounted(() => {
 
     setTimeout(() => {
       landingSectionHidden.value = false
-    }, 0)
+    }, 100)
   })()
 })
 
