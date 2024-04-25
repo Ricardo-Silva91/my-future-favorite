@@ -2,6 +2,7 @@ import { GoogleSpreadsheet } from 'google-spreadsheet'
 import { JWT } from 'google-auth-library'
 
 import { config } from 'dotenv-safe'
+import type { TApp } from '@/interfaces/data.interface'
 
 if (!process.env.CI) {
   config()
@@ -68,4 +69,17 @@ export const getArtists = async () => {
   return rows.map((artist: any) => ({
     ...artist
   }))
+}
+
+export const addArtist = async (artistLink: string, app: TApp) => {
+  const doc = await getDoc()
+  const rowCount = await getRowCount(doc)
+  const { sheet } = await getRows(doc, 0, rowCount)
+
+  await sheet.addRow({
+    [app === 'spotify' ? 'uri' : 'url']: artistLink,
+    popularityScore: 1000000,
+    recentSales: 1000000,
+    app
+  })
 }

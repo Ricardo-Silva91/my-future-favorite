@@ -14,7 +14,7 @@ export const getArtists = async () => {
 
   const getArtistsJson = await res.json()
 
-  return getArtistsJson.artists
+  return getArtistsJson.artists.filter((artist: IArtist) => !!artist.recentAlbums)
 }
 
 export const saveArtistsInLocalStorage = async (artistArray: IArtist[]) => {
@@ -50,6 +50,8 @@ export const fetchArtistsData = async (token: string, artistArray: any[]) => {
   })
 
   const fetchArtistsDataJson = await res.json()
+
+  console.log({ fetchArtistsDataJson, spotifyArtists })
 
   return fetchArtistsDataJson.artists.filter((artist: any) => artist.images.length)
 }

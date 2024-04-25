@@ -37,15 +37,16 @@
 </template>
 
 <script setup lang="ts">
+import type { TApp } from '@/interfaces/data.interface'
 import { submitBandcampBand, submitSpotifyArtist } from '@/utilities/fetchers'
 import type { FormKitNode } from 'node_modules/@formkit/core/dist/index.mjs'
 // import { FormKitNode } from 'node_modules\@formkit\core\dist\index.d.mts'
 import { ref, onMounted } from 'vue'
 
-const selectedApp = ref<'spotify' | 'bandcamp'>('spotify')
+const selectedApp = ref<TApp>('spotify')
 
 const setSelectedApp = (newSelectedApp?: string) => {
-  selectedApp.value = newSelectedApp as 'spotify' | 'bandcamp'
+  selectedApp.value = newSelectedApp as TApp
 }
 
 const checkSpotifyUrl: (node: FormKitNode, ...args: any[]) => boolean | Promise<boolean> = (
@@ -73,7 +74,7 @@ const getLinkFromSubmittedValue = (url: string) => {
     if (match2) {
       const hasQuery = url.indexOf('?')
       return hasQuery !== -1
-        ? url.replace('https://open.spotify.com/artist/', 'spotify:artist:').slice(0, hasQuery)
+        ? url.slice(0, hasQuery).replace('https://open.spotify.com/artist/', 'spotify:artist:')
         : url.replace('https://open.spotify.com/artist/', 'spotify:artist:')
     }
   } else {

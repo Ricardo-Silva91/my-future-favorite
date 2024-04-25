@@ -129,7 +129,9 @@ export const scrapeBandcampBand = async ({
   //   profilePicUrl: cover
   // })
 
-  const foundRow = rowsRaw.find((row) => row.get('url') === match[0])
+  const foundRow = rowsRaw.find(
+    (row) => row.get('url') === match[0] || row.get('url') === bandcampLink
+  )
 
   if (foundRow) {
     await foundRow.assign({
@@ -139,8 +141,14 @@ export const scrapeBandcampBand = async ({
       recentAlbums: JSON.stringify(recentAlbums),
       tags: JSON.stringify(artistTags),
       app: 'bandcamp',
-      profilePicUrl: cover || ''
+      profilePicUrl: cover?.replace('_21', '_5') || '',
+      popularityScore: '',
+      numberOfFollowers: '',
+      external_url: '',
+      uri: ''
     })
+
+    await foundRow.save()
   } else if (addIfMissing) {
     console.log(`Adding ${name} to db`)
     const sheet = doc.sheetsByIndex[0]
@@ -152,7 +160,7 @@ export const scrapeBandcampBand = async ({
       recentAlbums: JSON.stringify(recentAlbums),
       tags: JSON.stringify(artistTags),
       app: 'bandcamp',
-      profilePicUrl: cover || ''
+      profilePicUrl: cover?.replace('_21', '_5') || ''
     })
   } else {
     console.log(`${name} not found`)

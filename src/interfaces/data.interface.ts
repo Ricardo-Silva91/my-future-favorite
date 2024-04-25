@@ -1,3 +1,5 @@
+export type TApp = 'spotify' | 'bandcamp'
+
 export interface ICardItem {
   image: string
   url: string
@@ -19,7 +21,7 @@ export interface IArtist {
   url: string
   external_url: string
   name: string
-  app: 'spotify' | 'bandcamp'
+  app: TApp
   popularityScore: number
   numberOfFollowers: number
   tags: string[]

@@ -56,7 +56,7 @@ test('perform data maintenance', async ({ page, context }) => {
           uri: artist.uri
         }
 
-        const artistRow = rowsRaw.find((row) => row.get('url') === updatedArtist.url)
+        const artistRow = rowsRaw.find((row) => row.get('uri') === updatedArtist.uri)
 
         if (artistRow) {
           await artistRow.assign(updatedArtist)

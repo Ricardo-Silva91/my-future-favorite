@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ICardItem, type IArtist } from '@/interfaces/data.interface'
+import { type ICardItem, type IArtist, type TApp } from '@/interfaces/data.interface'
 import { useArtistsStore } from '@/stores/artists'
 import { computed, onMounted, ref, watch } from 'vue'
 import Card from './Card.vue'
@@ -128,7 +128,7 @@ const appFilterOptions = ref([
 const artistData = ref<ICardItem>()
 const releasesVisible = ref(false)
 
-const appFilter = ref<'spotify' | 'bandcamp' | undefined>(undefined)
+const appFilter = ref<TApp | undefined>(undefined)
 const tagFilter = ref<string | undefined>(undefined)
 
 const catalogItems = computed<ICardItem[]>(() =>
@@ -218,7 +218,7 @@ const chooseArtist = () => {
 const handleCatalogClick = () => {
   status.value = 'catalog'
 }
-const handleAppFilterChange = (event: 'spotify' | 'bandcamp') => {
+const handleAppFilterChange = (event: TApp) => {
   appFilter.value = event
 }
 const handleTagFilterChange = (event: string) => {
