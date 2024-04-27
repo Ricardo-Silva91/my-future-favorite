@@ -66,7 +66,7 @@ import { submitBandcampBand, submitSpotifyArtist } from '@/utilities/fetchers'
 import type { FormKitNode } from 'node_modules/@formkit/core/dist/index.mjs'
 import { ref, onMounted } from 'vue'
 
-const state = ref<'submit' | 'response' | 'loading'>('response')
+const state = ref<'submit' | 'response' | 'loading'>('submit')
 const responseStatus = ref<number>(200)
 const formUrl = ref<string | undefined>(undefined)
 const errorMsg = ref<string | undefined>(undefined)
