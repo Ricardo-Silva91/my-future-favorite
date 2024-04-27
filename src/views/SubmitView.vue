@@ -5,21 +5,20 @@
       'submit--hidden': hidden
     }"
   >
-    <h1>Submit new Artist/Band (⚠️ Work in progess ⚠️)</h1>
+    <h1>Submit new Artist/Band</h1>
     <section>
-      <FormKit type="form" @submit="submitArtist" #default="{ value }">
-        <FormKit
-          type="select"
-          label="spotify or Bandcamp?"
-          validation="required|not:Admin"
-          name="app"
-          :options="['spotify', 'bandcamp']"
-          @input="setSelectedApp($event)"
-        />
+      <FormKit type="form" @submit="submitArtist" #default="{ value }" v-if="state === 'submit'">
+        <Select
+          id="select-app"
+          :options="appFilterOptions"
+          :label="selectedApp"
+          @valueChange="setSelectedApp($event)"
+        ></Select>
         <FormKit
           type="text"
           name="url"
           id="url"
+          v-model="formUrl"
           validation="(500)checkSpotifyUrl"
           validation-visibility="live"
           :validation-rules="{ checkSpotifyUrl }"
@@ -28,25 +27,63 @@
               'Sorry, that url is not usable. Try something similar to https://open.spotify.com/artist/[artist-id] or https://[my-band].bandcamp.com/.'
           }"
           label="Artist/Band url"
-          help="Enter the url for the artist/band page on spotify or bandcamp"
-          placeholder="https://open.spotify.com/artist/[artist-id] or https://[my-band].bandcamp.com/"
+          help="something like https://open.spotify.com/artist/[artist-id] or https://[my-band].bandcamp.com/"
+          placeholder="https://..."
         />
+        <div v-if="errorMsg" class="submit__error-msg">{{ errorMsg }}</div>
       </FormKit>
+
+      <div v-if="state === 'response'">
+        <div v-if="responseStatus === 200">
+          <div>Thank you for submitting 😊</div>
+
+          <button @click="state = 'submit'" class="submit__return-button">Submit another</button>
+        </div>
+        <div v-if="responseStatus === 400">
+          <div>Submited url is already in list 😌</div>
+
+          <button @click="state = 'submit'" class="submit__return-button">Submit another</button>
+        </div>
+        <div v-if="responseStatus === 500">
+          <div>Something went wrong 😖</div>
+
+          <button @click="state = 'submit'" class="submit__return-button">Try again</button>
+        </div>
+      </div>
+
+      <div v-if="state === 'loading'" class="submit__loader-box">
+        <Loader class="submit__loader"></Loader>
+      </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { TApp } from '@/interfaces/data.interface'
+import Select from '@/components/Select.vue'
+import Loader from '@/components/Loader.vue'
 import { submitBandcampBand, submitSpotifyArtist } from '@/utilities/fetchers'
 import type { FormKitNode } from 'node_modules/@formkit/core/dist/index.mjs'
-// import { FormKitNode } from 'node_modules\@formkit\core\dist\index.d.mts'
 import { ref, onMounted } from 'vue'
 
+const state = ref<'submit' | 'response' | 'loading'>('response')
+const responseStatus = ref<number>(200)
+const formUrl = ref<string | undefined>(undefined)
+const errorMsg = ref<string | undefined>(undefined)
 const selectedApp = ref<TApp>('spotify')
+const appFilterOptions = ref([
+  { value: 'spotify', label: 'Spotify' },
+  { value: 'bandcamp', label: 'Bandcamp' }
+])
 
 const setSelectedApp = (newSelectedApp?: string) => {
   selectedApp.value = newSelectedApp as TApp
+  const savedVal = formUrl.value
+  formUrl.value = undefined
+
+  setTimeout(() => {
+    formUrl.value = savedVal
+  })
 }
 
 const checkSpotifyUrl: (node: FormKitNode, ...args: any[]) => boolean | Promise<boolean> = (
@@ -89,19 +126,23 @@ const getLinkFromSubmittedValue = (url: string) => {
 }
 
 const submitArtist = async (fields: any) => {
-  const app = fields['app']
+  state.value = 'loading'
   const url = fields['url']
   const resolvedUrl = getLinkFromSubmittedValue(url)
 
   if (!resolvedUrl) {
+    state.value = 'submit'
     return
   }
 
   if (selectedApp.value === 'bandcamp') {
-    submitBandcampBand(resolvedUrl)
+    responseStatus.value = await submitBandcampBand(resolvedUrl)
   } else {
-    submitSpotifyArtist(resolvedUrl)
+    responseStatus.value = await submitSpotifyArtist(resolvedUrl)
   }
+
+  state.value = 'response'
+  formUrl.value = undefined
 }
 
 const hidden = ref(true)
@@ -129,10 +170,106 @@ onMounted(() => {
     transform: translateY(20px);
   }
 
+  &__error-msg {
+    color: $color-white;
+    margin-top: 1rem;
+  }
+
+  &__loader-box {
+    position: relative;
+    padding: 3rem 0;
+  }
+
   & h1,
   h2,
   p {
     text-align: left;
+  }
+
+  .formkit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-top: 4rem;
+  }
+
+  .formkit-label {
+    color: $color-white;
+  }
+
+  .formkit-inner {
+    position: relative;
+    height: fit-content;
+    background-color: #0e0f10;
+
+    & > input {
+      width: 100%;
+      padding: 0.5rem 1rem;
+      background-color: #0e0f10;
+      color: $color-white;
+      border: 10px solid;
+      border-image-slice: 1;
+      border-width: 1px;
+      border-image-source: linear-gradient(
+        to left,
+        $color-primary-purple,
+        $color-primary-purple-light
+      );
+      transition: all 500ms ease-in-out;
+
+      &:hover {
+        border-image-source: linear-gradient(
+          to left,
+          $color-primary-purple-light,
+          $color-primary-purple
+        );
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  .formkit-messages {
+    position: absolute;
+  }
+
+  .formkit-label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .formkit-help {
+    color: $color-white;
+    margin-top: 0.2rem;
+  }
+
+  .formkit-input[type='submit'],
+  &__return-button {
+    padding: 0.5rem 1rem;
+    background-color: #0e0f10;
+    color: $color-white;
+    margin-top: 2rem;
+    cursor: pointer;
+    border: 10px solid;
+    border-image-slice: 1;
+    border-width: 1px;
+    border-image-source: linear-gradient(
+      to left,
+      $color-primary-purple,
+      $color-primary-purple-light
+    );
+    transition: all 500ms ease-in-out;
+
+    &:hover {
+      border-image-source: linear-gradient(
+        to left,
+        $color-primary-purple-light,
+        $color-primary-purple
+      );
+    }
   }
 }
 </style>

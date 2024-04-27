@@ -81,10 +81,12 @@ export const fetchAlbumsFromArtist = async (token: string, artistId: string) => 
 
 export const submitBandcampBand = async (bandLink: string) => {
   const res = await fetch(`.netlify/functions/submitBandcampBand?bandLink=${bandLink}`)
+
+  return res.status
 }
 
 export const submitSpotifyArtist = async (spotifyLink: string) => {
   const res = await fetch(`.netlify/functions/submitSpotifyArtist?spotifyLink=${spotifyLink}`)
 
-  // const result = await res.json()
+  return res.status
 }

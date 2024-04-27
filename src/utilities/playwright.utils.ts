@@ -64,7 +64,7 @@ export const scrapeBandcampBand = async ({
 
       await elemToCheck.waitFor({ state: 'visible', timeout: 3000 })
 
-      const titleElem = await albumPage.locator('#band-name-location > .title')
+      const titleElem = await albumPage.locator('#name-section > .trackTitle')
       const title = await titleElem.innerText()
 
       const coverElem = await albumPage.locator('#tralbumArt img')
