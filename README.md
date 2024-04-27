@@ -2,34 +2,30 @@
 
 ## About
 
-Web app for discovering new underground artists/bands on Spotify.\
-Uses the Spotify web API to sort [this list](https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/src/assets/artists.js) of artists/bands by popularity or monthly followers.\
-If you want to submit a new profile, you can check how to do it [here](https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/docs/how-to-submit.md).
+This is a web app for discovering new underground artists/bands on Spotify and Bandcamp.\
+Uses the Spotify web API to sort artists/bands by popularity and recent sales number to sort bandcamp artists/bands.\
+If you want to submit a new profile, use the 'submit' page.
 
 [Check out the website](https://my-future-favorite.netlify.app/)
 
 ## How it works
 
-When you enter the app, the artits/band data is fetched from the Spotify API ([here's](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-an-artist) some more information about the artist data).\
-You can then click the big play button get a new artist.\
-This artist will be chosen according to either their `popularity` score (set by Spotify) or the number of followers they have.\
+[Everyday](https://github.com/Ricardo-Silva91/my-future-favorite/actions/workflows/maintain.yml), the artits/band data is fetched from the Spotify API and Bandcamp ([here](https://github.com/Ricardo-Silva91/my-future-favorite/blob/main/src/interfaces/data.interface.ts#L18)'s some more information about the artist data).\
+In the app, you can then click the big play button get suggested a new artist.\
+This artist will be chosen according to either their popularity score (set by Spotify) or the number of recent sales (according to Bandcamp).\
 You will only get artists/bands the have the lowest score, to promote the discovery of underground artists 😉.\
 If multiple artists have the same lowest score, you will get a random one out of the bunch.\
-After getting the chosen artist, you can either click the artists profile picture or any of the 'Releases' images and it will open it directly on your Spotify app 😁.
-
-## Troubleshooting
-
-Sometimes the network request to Spotify may be slower or not work.
-In this case, please refresh the page and try again.
+After getting the chosen artist, you can either click the artists profile picture or any of the 'Releases' cards and it will take you to their page 😁.\
+You can also block artists you don't like so they won't get recommended to you again.
 
 ## Contributing
 
+This project is open-source, so you can check all the code involved here.\
 Pull requests with fixes and improvements are always welcome.\
-Also, if you have some ideas for improvement that you want to discuss, please use the [issues](https://github.com/Ricardo-Silva91/my-future-favorite/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) section 😊.
+Also, if you have some ideas for improvement that you want to discuss, please use the issues section 😊.
 
-## Note
+## Final Note
 
-
-This is just an idea, and wether it works or not depends on how many people support it (both artists and fans),\
-So if you're an artist, don't just submit your profile to get more streams, actually engage with the app and support other underground artists.\
+This is just an idea, and wether it works or not depends on how many people support it (both artists and fans), So if you're an artist, don't just submit your profile to get more streams, actually engage with the app and support other underground artists.\
 And if you're a fan, don't give up on this project just because you didn't find your actual 'Future Favorite' on the first try 😅, try it again and you'll get something you really like, that you wouldn't find otherwise 😁.
+
