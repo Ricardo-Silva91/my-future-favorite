@@ -32,6 +32,14 @@
           >here</a
         >'s some more information about the artist data).
       </p>
+      <p>
+        The list of artists/bands is publicly available
+        <a
+          href="https://docs.google.com/spreadsheets/d/1XBHnljg72YoqyiIIJPHNdud458wcBOeuvnE6UMtU3cA/edit#gid=0"
+          target="_blank"
+          >here</a
+        >
+      </p>
       <p>In the app, you can then click the big play button get suggested a new artist.</p>
       <p>
         This artist will be chosen according to either their popularity score (set by Spotify) or
