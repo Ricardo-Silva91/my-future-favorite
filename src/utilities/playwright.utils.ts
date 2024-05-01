@@ -1,4 +1,4 @@
-import type { Page, BrowserContext } from '@playwright/test'
+import { type Page, type BrowserContext, expect } from '@playwright/test'
 import type { GoogleSpreadsheet, GoogleSpreadsheetRow } from 'google-spreadsheet'
 
 export const scrapeBandcampBand = async ({
@@ -39,7 +39,11 @@ export const scrapeBandcampBand = async ({
 
   const albumElems = page.locator('.music-grid-item.square > a')
 
-  await albumElems.first().waitFor({ state: 'visible', timeout: 3000 })
+  try {
+    await albumElems.first().waitFor({ state: 'visible', timeout: 3000 })
+  } catch (error) {
+    expect(await albumElems.count()).toBeGreaterThan(0)
+  }
 
   const numberOfAlbums = await albumElems.count()
 
