@@ -64,7 +64,7 @@ export const scrapeBandcampBand = async ({
 
       const elemToCheck = albumPage.locator('#collect-anchor')
       try {
-        await elemToCheck.waitFor({ state: 'visible', timeout: 3000 })
+        await elemToCheck.waitFor({ state: 'attached', timeout: 3000 })
       } catch (error: any) {
         console.log({ resolvedHref })
         throw new Error(error)
