@@ -57,16 +57,18 @@ export const scrapeBandcampBand = async ({
     const href = await element.getAttribute('href')
     const resolvedHref = `${match[0]}${href}`
 
-    // console.log({ resolvedHref })
-
     if (resolvedHref) {
       const albumPage = await context.newPage()
 
       await albumPage.goto(resolvedHref)
 
-      const elemToCheck = albumPage.locator('.share-embed-label')
-
-      await elemToCheck.waitFor({ state: 'visible', timeout: 3000 })
+      const elemToCheck = albumPage.locator('#collect-anchor')
+      try {
+        await elemToCheck.waitFor({ state: 'visible', timeout: 3000 })
+      } catch (error: any) {
+        console.log({ resolvedHref })
+        throw new Error(error)
+      }
 
       const titleElem = await albumPage.locator('#name-section > .trackTitle')
       const title = await titleElem.innerText()
